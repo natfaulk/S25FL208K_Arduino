@@ -3,55 +3,37 @@
 
 S25FL208K *spiFlash;
 
+uint32_t testAddr = 0x000008;
+
 void setup(){
   Serial.begin(115200);
   // if this is run before setup, then doesn't work.
   // other option is to have an init function.
-  //spiFlash = new S25FL208K(4);
+  spiFlash = new S25FL208K(4);
   Serial.println("Setup complete.");
 
-  //Serial.println(spiFlash->readStatus(),BIN);
-  //spiFlash->writeEnable();
-  //Serial.println(spiFlash->readStatus(),BIN);
+  String test = "Hello world";
 
-  SPI.begin();
-  int csPin = 4;
-  pinMode(csPin, OUTPUT);
-  digitalWrite(csPin, 1);
+  uint8_t* dataToStore = new uint8_t[test.length()];
+  for(int i = 0; i<test.length(); i++){
+    dataToStore[i] = uint8_t(test[i]);
+  }
 
-  uint8_t res = 0;
-  digitalWrite(csPin, 0);
-  SPI.transfer(0x05);
-  res = SPI.transfer(0);
-  digitalWrite(csPin, 1);
+  unsigned long timeWrite = millis();
+  spiFlash->storeData(testAddr, test.length(), dataToStore);
 
-  Serial.println(res,BIN);
+  while(spiFlash->getWIP()){
+    Serial.print(".");
+  }
 
-  digitalWrite(csPin, 0);
-  SPI.transfer(0x06);
-  digitalWrite(csPin, 1);
+  Serial.print("\nTime taken to write:");
+  Serial.println(millis() - timeWrite);
 
-  digitalWrite(csPin, 0);
-  SPI.transfer(0x05);
-  res = SPI.transfer(0);
-  digitalWrite(csPin, 1);
-
-  Serial.println(res,BIN);
-
-  digitalWrite(csPin, 0);
-  SPI.transfer(0x04);
-  digitalWrite(csPin, 1);
-
-  digitalWrite(csPin, 0);
-  SPI.transfer(0x05);
-  res = SPI.transfer(0);
-  digitalWrite(csPin, 1);
-
-  Serial.println(res,BIN);
-
-
-
-
+  uint8_t* dataToRead = new uint8_t[20];
+  spiFlash->readData(0, 20, dataToRead);
+  for(int i = 0; i<20; i++){
+    Serial.print((char)dataToRead[i]);
+  }
 }
 
 void loop(){
