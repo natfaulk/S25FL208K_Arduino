@@ -74,7 +74,19 @@ bool S25FL208K::storeData(uint32_t address, uint8_t numBytes, uint8_t* &data){
   }
 
   // check page erased
+  bool allOnes = true;
+  uint8_t tempResult = new uint8_t[numBytes];
+  this->readData(address, numBytes, tempResult);
+  for (int i = 0; i<numBytes; i++){
+    if (tempResult[i]!=0xFF){
+      allOnes = false;
+    }
+  }
+  delete[] tempResult;
 
+  if (!allOnes){
+    return false;
+  }
 
   // set WRITE_ENABLE
   this->writeEnable();
