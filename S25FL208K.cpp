@@ -106,3 +106,46 @@ bool S25FL208K::storeData(uint32_t address, uint8_t numBytes, uint8_t* &data){
 
   return true;
 }
+
+bool S25FL208K::chipErase(void){
+  // check WIP bit
+  if (this->getWIP()){
+    return false;
+  }
+  this->sendCommand(CHIP_ERASE);
+  return true;
+}
+
+bool S25FL208K::sectorErase(uint32_t address){
+  // check WIP bit
+  if (this->getWIP()){
+    return false;
+  }
+
+  digitalWrite(mCsPin, 0);
+  // transfer the address as 3 bytes
+  SPI.transfer(SECTOR_ERASE);
+  SPI.transfer(uint8_t(0xFF & (address>>16)));
+  SPI.transfer(uint8_t(0xFF & (address>>8)));
+  SPI.transfer(uint8_t(0xFF & address));
+  digitalWrite(mCsPin, 1);
+
+  return true;
+}
+
+bool S25FL208K::blockErase(uint32_t address){
+  // check WIP bit
+  if (this->getWIP()){
+    return false;
+  }
+
+  digitalWrite(mCsPin, 0);
+  // transfer the address as 3 bytes
+  SPI.transfer(BLOCK_ERASE);
+  SPI.transfer(uint8_t(0xFF & (address>>16)));
+  SPI.transfer(uint8_t(0xFF & (address>>8)));
+  SPI.transfer(uint8_t(0xFF & address));
+  digitalWrite(mCsPin, 1);
+
+  return true;
+}
