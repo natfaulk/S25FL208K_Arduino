@@ -112,6 +112,10 @@ bool S25FL208K::chipErase(void){
   if (this->getWIP()){
     return false;
   }
+
+  // set WRITE_ENABLE
+  this->writeEnable();
+  
   this->sendCommand(CHIP_ERASE);
   return true;
 }
@@ -121,6 +125,9 @@ bool S25FL208K::sectorErase(uint32_t address){
   if (this->getWIP()){
     return false;
   }
+
+  // set WRITE_ENABLE
+  this->writeEnable();
 
   digitalWrite(mCsPin, 0);
   // transfer the address as 3 bytes
@@ -138,6 +145,9 @@ bool S25FL208K::blockErase(uint32_t address){
   if (this->getWIP()){
     return false;
   }
+
+  // set WRITE_ENABLE
+  this->writeEnable();
 
   digitalWrite(mCsPin, 0);
   // transfer the address as 3 bytes
