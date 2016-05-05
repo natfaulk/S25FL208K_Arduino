@@ -67,7 +67,7 @@ bool S25FL208K::readData(uint32_t address, uint32_t numBytes, uint8_t* &result){
   return true;
 }
 
-bool S25FL208K::storeData(uint32_t address, uint8_t numBytes, uint8_t* &data){
+bool S25FL208K::storeData(uint32_t address, uint16_t numBytes, uint8_t* &data){
   // check WIP bit
   if (this->getWIP()){
     return false;
@@ -115,7 +115,7 @@ bool S25FL208K::chipErase(void){
 
   // set WRITE_ENABLE
   this->writeEnable();
-  
+
   this->sendCommand(CHIP_ERASE);
   return true;
 }

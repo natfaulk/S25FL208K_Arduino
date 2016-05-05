@@ -34,7 +34,7 @@ public:
   bool blockErase(uint32_t address);
   // address is 24 bytes, however no uint24_t data type
   // up to 255 bytes (chip supports up to 256 at once but want to use a uint8_t)
-  bool storeData(uint32_t address, uint8_t numBytes, uint8_t* &data);
+  bool storeData(uint32_t address, uint16_t numBytes, uint8_t* &data);
 private:
   // returns dynamic memory
   // therefore needs a delete[] call on the pointer when done
